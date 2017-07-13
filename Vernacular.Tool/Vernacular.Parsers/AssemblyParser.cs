@@ -70,7 +70,7 @@ namespace Vernacular.Parsers
                 yield return ".dll";
             }
         }
-        
+
         private void Add (ModuleDefinition module)
         {
             try {
@@ -98,12 +98,13 @@ namespace Vernacular.Parsers
             if (Path.GetExtension (resource.Name) == ".resources") {
                 using (var reader = new ResourceReader (resource.GetResourceStream ())) {
                     foreach (DictionaryEntry re in reader) {
+                        if (re.Key.ToString().StartsWith(">>")) continue;
                         if (embedded_resource_parser.SupportedFileExtensions.Contains (Path.GetExtension (re.Key as string))) {
                             embedded_resource_parser.Add (re.Value as Stream, re.Key as string);
                         }
-                    }        
+                    }
                 }
-            } else if (embedded_resource_parser.SupportedFileExtensions.Contains (Path.GetExtension(resource.Name))) {			
+            } else if (embedded_resource_parser.SupportedFileExtensions.Contains (Path.GetExtension(resource.Name))) {
                 embedded_resource_parser.Add (resource.GetResourceStream (), resource.Name);
             }
         }
@@ -119,7 +120,7 @@ namespace Vernacular.Parsers
             var module = ModuleDefinition.ReadModule (stream);
             Add (module);
         }
-        
+
         public override IEnumerable<ILocalizationUnit> Parse ()
         {
             return
